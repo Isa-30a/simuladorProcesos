@@ -42,7 +42,7 @@ public class Main {
         this.processesSFJ.add(new Process("c", 4, 4));
         this.processesSFJ.add(new Process("d", 5, 2));*/
 
-        Processes context = new Processes(choice,array);.
+        Processes context = new Processes(choice,array);
 
     }
 
