@@ -4,49 +4,48 @@ import algoritmosplanificacion.Methods;
 import algoritmosplanificacion.Process;
 import algoritmosplanificacion.Processes;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class FIFO implements Methods {
-    private Queue<Process> processes;
+    private ArrayList<Process> processes;
+    private int actualTime = 0;
 
-    public FIFO(Queue<Process> processes) {
+    public FIFO(ArrayList<Process> processes) {
         this.processes = processes;
     }
 
     @Override
     public void addProcess(Process process) {
-        processes.add(process);
-    }
-
-    @Override
-    public void planificationMethod(Processes processes) {
 
     }
 
     @Override
-    public void calculateWaitTime(Processes processesType) {
-        Queue<Process> processes = processesType.getProcessesFifo();
-        for (Process process : processes) {
-            process.setWaitTime(process.getStartTime() - process.getArrivalTime());
+    public void planificationMethod() {
+        for (int i = 0; processes.isEmpty(); i++) {
+            Process newProcess = processes.get(i);
+            if (newProcess.getArrivalTime() <= actualTime) {
+
+                actualTime += newProcess.getArrivalTime();
+                newProcess.setStartTime(actualTime);
+                calculateEndTime(newProcess);
+                calculateWaitTime(newProcess);
+            }
         }
     }
-
-    @Override
-    public void calculateEndTime(Processes processesType) {
-        Queue<Process> processes = processesType.getProcessesFifo();
-        for (Process process : processes) {
-            process.setEndTime(process.getStartTime() + process.getCpuTime());
-        }
-    }
-
     @Override
     public void calculateStartTime(Processes processes) {
-        Queue<Process> processQueue = new LinkedList<>(processes.getProcesses());
-        int exTime = processQueue.element().getStartTime();
-        for (Process process : processQueue) {
-            process.setStartTime(exTime);
-            exTime += process.getCpuTime();
-        }
+    }
+
+
+    @Override
+    public void calculateEndTime(Process process) {
+        process.setEndTime(process.getStartTime() + process.getCpuTime());
+    }
+
+    @Override
+    public void calculateWaitTime(Process process) {
+        process.setWaitTime(process.getStartTime() - process.getArrivalTime());
     }
 }
