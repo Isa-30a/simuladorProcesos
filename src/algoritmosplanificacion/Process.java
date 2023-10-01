@@ -9,6 +9,7 @@ package algoritmosplanificacion;
  * @author Isa
  */
 public class Process {
+
     private String name;
     private int priority;
     final private int arrivalTime;
@@ -16,6 +17,7 @@ public class Process {
     private int startTime;
     private int endTime;
     private int waitTime;
+
     public Process(int arrivalTime, int cpuTime) {
         this.arrivalTime = arrivalTime;
         this.cpuTime = cpuTime;
@@ -23,6 +25,7 @@ public class Process {
         this.endTime = 0;
         this.waitTime = 0;
     }
+
     public Process(String name, int arrivalTime, int cpuTime) {
         this.name = name;
         this.arrivalTime = arrivalTime;
@@ -31,6 +34,7 @@ public class Process {
         this.endTime = 0;
         this.waitTime = 0;
     }
+
     public Process(String name, int priority, int arrivalTime, int cpuTime) {
         this.name = name;
         this.priority = priority;
@@ -93,11 +97,5 @@ public class Process {
     public String toString() {
         return "Process{" + "nombre=" + name + ", tiempoLlegada=" + arrivalTime + ", tiempoCpu=" + cpuTime + ", tiempoComienzo=" + startTime + ", tiempoFin=" + endTime + ", tiempoEspera=" + waitTime + "}\n";
     }
-    
-    
 
-    
-    
-    
-    
 }

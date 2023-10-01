@@ -16,30 +16,26 @@ import java.util.*;
  */
 public class Processes {
     private Methods method;
-    private ArrayList<Process> processes ;
-    private Queue<Process> processesFifo;
-    private Queue<Process> processesSFJ = new PriorityQueue<>();
+    private ArrayList<Process> processes;
 
-    public Processes(int choice,ArrayList<Process> processes) {
+    public Processes(int choice, ArrayList<Process> processes) {
         processes.sort(Comparator.comparing(Process::getArrivalTime));
-        this.processes = processes;
-        this.processesFifo = new LinkedList<>(processes);
         switch (choice) {
-            case 1 -> method = new FIFO(processesFifo);
+            case 1 -> method = new FIFO(processes);
             case 2 -> method = new SJF();
             case 3 -> method = new SRTF();
             case 4 -> method = new PriorityExp();
         }
+        this.processes = processes;
+
     }
 
-    public Queue<Process> getProcessesFifo() {
-        return processesFifo;
+    public void printProcesses() {
+        method.planificationMethod();
     }
+
     public void setMethod(Methods method) {
         this.method = method;
-    }
-    public void setProcessesFifo(Queue<Process> processesFifo) {
-        this.processesFifo = processesFifo;
     }
 
     public ArrayList<Process> getProcesses() {
@@ -50,17 +46,10 @@ public class Processes {
         this.processes = processes;
     }
 
-    public Queue<Process> getProcessesSFJ() {
-        return processesSFJ;
-    }
-
-    public void setProcessesSFJ(Queue<Process> processesSFJ) {
-        this.processesSFJ = processesSFJ;
-    }
 
     @Override
     public String toString() {
-        return "\nProcesses{" + "processesFifo=" + processesFifo + ",\n processesSFJ=" + processesSFJ + '}';
+        return "\nProcesses{" + "\n " + processes + '}';
     }
 
 }

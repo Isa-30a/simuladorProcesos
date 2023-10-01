@@ -1,15 +1,14 @@
 package algoritmosplanificacion;
 
-import java.util.ArrayList;
 
 public interface Methods {
     void addProcess(Process process);
 
-    void planificationMethod(Processes processes);
+    void planificationMethod();
 
     void calculateStartTime(Processes processes);
 
-    void calculateEndTime(Processes processes);
+    void calculateEndTime(Process process);
 
-    void calculateWaitTime(Processes processes);
+    void calculateWaitTime(Process process);
 }

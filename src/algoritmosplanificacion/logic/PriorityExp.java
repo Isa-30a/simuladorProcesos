@@ -14,7 +14,7 @@ public class PriorityExp implements Methods {
     }
 
     @Override
-    public void planificationMethod(Processes processes) {
+    public void planificationMethod() {
 
     }
 
@@ -24,14 +24,12 @@ public class PriorityExp implements Methods {
     }
 
     @Override
-    public void calculateEndTime(Processes processes) {
+    public void calculateEndTime(Process process) {
 
     }
 
     @Override
-    public void calculateWaitTime(Processes processes) {
+    public void calculateWaitTime(Process process) {
 
     }
-
-
 }
