@@ -5,8 +5,6 @@ import algoritmosplanificacion.Process;
 import algoritmosplanificacion.Processes;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 
 public class FIFO implements Methods {
     private ArrayList<Process> processes;
@@ -23,17 +21,24 @@ public class FIFO implements Methods {
 
     @Override
     public void planificationMethod() {
-        for (int i = 0; processes.isEmpty(); i++) {
-            Process newProcess = processes.get(i);
+        ArrayList<Process> auxProcesses = new ArrayList<>(processes);
+        Process newProcess;
+        for (int i = 0; !auxProcesses.isEmpty(); i++) {
+            newProcess = auxProcesses.get(i);
             if (newProcess.getArrivalTime() <= actualTime) {
-
-                actualTime += newProcess.getArrivalTime();
                 newProcess.setStartTime(actualTime);
+                actualTime += newProcess.getCpuTime();
                 calculateEndTime(newProcess);
                 calculateWaitTime(newProcess);
+                processes.set(processes.indexOf(newProcess),newProcess );
+                auxProcesses.remove(i);
+                i = -1;
             }
         }
+
+        System.out.println(processes);
     }
+
     @Override
     public void calculateStartTime(Processes processes) {
     }
@@ -42,6 +47,7 @@ public class FIFO implements Methods {
     @Override
     public void calculateEndTime(Process process) {
         process.setEndTime(process.getStartTime() + process.getCpuTime());
+
     }
 
     @Override
