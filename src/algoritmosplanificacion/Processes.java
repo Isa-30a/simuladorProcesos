@@ -23,7 +23,7 @@ public class Processes {
         switch (choice) {
             case 1 -> method = new FIFO(processes);
             case 2 -> method = new SJF(processes);
-            case 3 -> method = new SRTF();
+            case 3 -> method = new SRTF(processes);
             case 4 -> method = new PriorityExp();
         }
         this.processes = processes;

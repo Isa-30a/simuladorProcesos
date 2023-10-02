@@ -4,8 +4,9 @@
  */
 package algoritmosplanificacion;
 
+import java.util.ArrayList;
+
 /**
- *
  * @author Isa
  */
 public class Process {
@@ -13,26 +14,22 @@ public class Process {
     private String name;
     private int priority;
     final private int arrivalTime;
-    final private int cpuTime;
-    private int startTime;
-    private int endTime;
-    private int waitTime;
+    private int cpuTime;
+    private ArrayList<Integer> startTime;
+    private ArrayList<Integer> endTime;
+    private ArrayList<Integer> waitTime;
 
     public Process(int arrivalTime, int cpuTime) {
         this.arrivalTime = arrivalTime;
         this.cpuTime = cpuTime;
-        this.startTime = 0;
-        this.endTime = 0;
-        this.waitTime = 0;
+
     }
 
     public Process(String name, int arrivalTime, int cpuTime) {
         this.name = name;
         this.arrivalTime = arrivalTime;
         this.cpuTime = cpuTime;
-        this.startTime = 0;
-        this.endTime = 0;
-        this.waitTime = 0;
+
     }
 
     public Process(String name, int priority, int arrivalTime, int cpuTime) {
@@ -40,9 +37,7 @@ public class Process {
         this.priority = priority;
         this.arrivalTime = arrivalTime;
         this.cpuTime = cpuTime;
-        this.startTime = 0;
-        this.endTime = 0;
-        this.waitTime = 0;
+
     }
 
     public String getName() {
@@ -68,29 +63,31 @@ public class Process {
     public int getCpuTime() {
         return cpuTime;
     }
-
-    public int getStartTime() {
+    public void setCpuTime(int cpuTime) {
+        this.cpuTime= cpuTime;
+    }
+    public ArrayList getStartTime() {
         return startTime;
     }
 
     public void setStartTime(int startTime) {
-        this.startTime = startTime;
+        this.startTime.add(startTime);
     }
 
-    public int getEndTime() {
+    public ArrayList getEndTime() {
         return endTime;
     }
 
     public void setEndTime(int endTime) {
-        this.endTime = endTime;
+        this.endTime.add(endTime);
     }
 
-    public int getWaitTime() {
+    public ArrayList getWaitTime() {
         return waitTime;
     }
 
     public void setWaitTime(int waitTime) {
-        this.waitTime = waitTime;
+        this.waitTime.add(waitTime);
     }
 
     @Override

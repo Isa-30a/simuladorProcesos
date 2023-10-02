@@ -46,12 +46,11 @@ public class FIFO implements Methods {
 
     @Override
     public void calculateEndTime(Process process) {
-        process.setEndTime(process.getStartTime() + process.getCpuTime());
-
+        process.setEndTime(Integer.parseInt((String) process.getStartTime().get(0)) + process.getCpuTime());
     }
 
     @Override
     public void calculateWaitTime(Process process) {
-        process.setWaitTime(process.getStartTime() - process.getArrivalTime());
+        process.setWaitTime(Integer.parseInt((String) process.getStartTime().get(0)) - process.getArrivalTime());
     }
 }
