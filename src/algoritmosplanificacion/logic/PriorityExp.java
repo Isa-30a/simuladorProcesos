@@ -4,7 +4,6 @@ import algoritmosplanificacion.Methods;
 import algoritmosplanificacion.Process;
 import algoritmosplanificacion.Processes;
 
-import java.util.ArrayList;
 
 public class PriorityExp implements Methods {
 

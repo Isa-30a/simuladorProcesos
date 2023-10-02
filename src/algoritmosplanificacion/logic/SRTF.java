@@ -32,7 +32,7 @@ public class SRTF implements Methods {
             newProcess = auxProcesses.get(i);
             if (newProcess.getArrivalTime() <= actualTime && remainingTime(newProcess) < remainingTime(actualProcess)) {
                 i = changeExProcess(auxProcesses, newProcess, i);
-            }else if(newProcess.getArrivalTime()==0){
+            } else if (newProcess.getArrivalTime() == 0) {
                 i = changeExProcess(auxProcesses, newProcess, i);
             }
         }
@@ -46,9 +46,9 @@ public class SRTF implements Methods {
         actualProcess.setWaitTime((int) actualProcess.getStartTime().get(lastindex) - actualProcess.getArrivalTime());
         actualTime += actualProcess.getCpuTime() - remainingTime(actualProcess);
         actualProcess.setCpuTime(remainingTime(actualProcess));
-        if (remainingTime(actualProcess)<=0){
+        if (remainingTime(actualProcess) <= 0) {
             auxProcesses.remove(actualProcess);
-            i =0;
+            i = 0;
         }
         actualProcess = newProcess;
         return i;

@@ -40,6 +40,15 @@ public class Process {
 
     }
 
+    public int totalWaitTime() {
+        int averageTime = 0;
+        for (int espera : waitTime
+        ) {
+            averageTime += espera;
+        }
+        return averageTime / waitTime.size();
+    }
+
     public String getName() {
         return name;
     }
@@ -63,9 +72,11 @@ public class Process {
     public int getCpuTime() {
         return cpuTime;
     }
+
     public void setCpuTime(int cpuTime) {
-        this.cpuTime= cpuTime;
+        this.cpuTime = cpuTime;
     }
+
     public ArrayList getStartTime() {
         return startTime;
     }
