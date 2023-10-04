@@ -9,12 +9,13 @@ import java.util.ArrayList;
 /**
  * @author Isa
  */
-public class Process {
+public class Process implements Comparable<Process> {
 
     private String name;
     private int priority;
     final private int arrivalTime;
     private int cpuTime;
+    private  int cpuRemainingTime;
     private ArrayList<Integer> startTime;
     private ArrayList<Integer> endTime;
     private ArrayList<Integer> waitTime;
@@ -22,13 +23,18 @@ public class Process {
     public Process(int arrivalTime, int cpuTime) {
         this.arrivalTime = arrivalTime;
         this.cpuTime = cpuTime;
-
+        this.startTime = new ArrayList<>();
+        this.endTime = new ArrayList<>();
+        this.waitTime = new ArrayList<>();
     }
 
     public Process(String name, int arrivalTime, int cpuTime) {
         this.name = name;
         this.arrivalTime = arrivalTime;
         this.cpuTime = cpuTime;
+        this.startTime = new ArrayList<>();
+        this.endTime = new ArrayList<>();
+        this.waitTime = new ArrayList<>();
 
     }
 
@@ -37,6 +43,9 @@ public class Process {
         this.priority = priority;
         this.arrivalTime = arrivalTime;
         this.cpuTime = cpuTime;
+        this.startTime = new ArrayList<>();
+        this.endTime = new ArrayList<>();
+        this.waitTime = new ArrayList<>();
 
     }
 
@@ -101,9 +110,22 @@ public class Process {
         this.waitTime.add(waitTime);
     }
 
+    public int getCpuRemainingTime() {
+        return cpuRemainingTime;
+    }
+
+    public void setCpuRemainingTime(int cpuRemainingTime) {
+        this.cpuRemainingTime = cpuRemainingTime;
+    }
+
     @Override
     public String toString() {
         return "Process{" + "nombre=" + name + ", tiempoLlegada=" + arrivalTime + ", tiempoCpu=" + cpuTime + ", tiempoComienzo=" + startTime + ", tiempoFin=" + endTime + ", tiempoEspera=" + waitTime + "}\n";
     }
 
+    @Override
+    public int compareTo(Process otro) {
+        return Integer.compare(this.cpuRemainingTime, otro.cpuRemainingTime);
+
+    }
 }

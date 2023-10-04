@@ -56,6 +56,7 @@ public class FIFO implements Methods {
             processes.get(i).totalWaitTime();
         }
         return espera;
+
     }
 
     @Override

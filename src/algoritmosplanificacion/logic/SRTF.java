@@ -6,6 +6,7 @@ import algoritmosplanificacion.Processes;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.PriorityQueue;
 
 public class SRTF implements Methods {
     private ArrayList<Process> processes;
@@ -24,17 +25,41 @@ public class SRTF implements Methods {
 
     @Override
     public void planificationMethod() {
-        processes.sort(Comparator.comparing(Process::getArrivalTime));
-        actualProcess = processes.get(0);
-        ArrayList<Process> auxProcesses = new ArrayList<>(processes);
-        Process newProcess;
-        for (int i = 0; !processes.isEmpty(); i++) {
-            newProcess = auxProcesses.get(i);
-            if (newProcess.getArrivalTime() <= actualTime && remainingTime(newProcess) < remainingTime(actualProcess)) {
-                i = changeExProcess(auxProcesses, newProcess, i);
-            } else if (newProcess.getArrivalTime() == 0) {
-                i = changeExProcess(auxProcesses, newProcess, i);
+        PriorityQueue<Process> readyQueue = new PriorityQueue<>();
+        int tiempoActual = 0;
+        int totalProcesos = processes.size();
+        int procesoActual = 0;
+        
+
+        while (procesoActual < totalProcesos || !readyQueue.isEmpty()) {
+            // Agregar procesos a la cola de listos si han llegado.
+            while (procesoActual < totalProcesos && processes.get(procesoActual).getArrivalTime() <= tiempoActual) {
+                readyQueue.add(processes.get(procesoActual));
+                procesoActual++;
             }
+
+            if (!readyQueue.isEmpty()) {
+                Process executionProcess = readyQueue.poll();
+                if (executionProcess.getStartTime().isEmpty()) {
+                    executionProcess.setStartTime(tiempoActual); // Añadir el tiempo de inicio
+                }
+                //looooooooop
+                System.out.println("Tiempo " + tiempoActual + ": Ejecutando " + executionProcess.getName());
+
+                executionProcess.setCpuRemainingTime(executionProcess.getCpuRemainingTime() - 1);
+
+                if (executionProcess.getCpuRemainingTime() == 0) {
+                    executionProcess.setEndTime(tiempoActual + 1); // Añadir el tiempo de finalización
+                    int ultimoInicio = (int) executionProcess.getStartTime().get(executionProcess.getStartTime().size() - 1);
+                    executionProcess.setWaitTime(ultimoInicio - executionProcess.getArrivalTime()); // Calcular el tiempo de espera
+                } else {
+                    readyQueue.add(executionProcess);
+                }
+            } else {
+                System.out.println("Tiempo " + tiempoActual + ": CPU en espera");
+            }
+
+            tiempoActual++;
         }
         System.out.println(processes);
     }

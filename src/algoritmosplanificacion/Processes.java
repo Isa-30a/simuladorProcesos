@@ -46,7 +46,6 @@ public class Processes {
         this.processes = processes;
     }
 
-
     @Override
     public String toString() {
         return "\nProcesses{" + "\n " + processes + '}';
