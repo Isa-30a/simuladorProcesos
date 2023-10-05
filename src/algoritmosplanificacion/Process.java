@@ -26,6 +26,7 @@ public class Process implements Comparable<Process> {
         this.startTime = new ArrayList<>();
         this.endTime = new ArrayList<>();
         this.waitTime = new ArrayList<>();
+        this.cpuRemainingTime = cpuTime;
     }
 
     public Process(String name, int arrivalTime, int cpuTime) {
@@ -35,6 +36,7 @@ public class Process implements Comparable<Process> {
         this.startTime = new ArrayList<>();
         this.endTime = new ArrayList<>();
         this.waitTime = new ArrayList<>();
+        this.cpuRemainingTime = cpuTime;
 
     }
 
@@ -42,6 +44,7 @@ public class Process implements Comparable<Process> {
         this.name = name;
         this.priority = priority;
         this.arrivalTime = arrivalTime;
+        this.cpuRemainingTime = cpuTime;
         this.cpuTime = cpuTime;
         this.startTime = new ArrayList<>();
         this.endTime = new ArrayList<>();

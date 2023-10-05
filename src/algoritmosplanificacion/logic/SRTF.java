@@ -25,32 +25,52 @@ public class SRTF implements Methods {
 
     @Override
     public void planificationMethod() {
-        PriorityQueue<Process> priorityQueue = new PriorityQueue<>();
-        Process newProcess;
-        int i = 0;
-        do {
-            newProcess = processes.get(i);
-            if (newProcess.getArrivalTime() == 0) {
-                newProcess.setStartTime(actualTime);
-                actualProcess = newProcess;
-            }
-            if (processes.get(i).getArrivalTime() <= actualTime) {
+        PriorityQueue<Process> readyQueue = new PriorityQueue<>();
+        ArrayList<Process> procesos = new ArrayList<>(processes);
+        int tiempoActual = 0, i = 0;
+        Process procesoActual = null;
 
-                if (newProcess.getCpuRemainingTime() < actualProcess.getCpuRemainingTime()) {
-                    actualProcess.setEndTime(actualTime);
-
-                    actualProcess.setWaitTime(lastIndex(actualProcess.getStartTime()) - actualProcess.getArrivalTime());
-                    actualProcess = newProcess;
-                    newProcess.setStartTime(actualTime);
-                } else {
-                    priorityQueue.add(newProcess);
+        while (!readyQueue.isEmpty() || i < processes.size()) {
+            // Agrega procesos a la cola de listos si han llegado
+            for (Process proceso : procesos) {
+                if (proceso.getArrivalTime() <= tiempoActual) {
+                    readyQueue.add(proceso);
                 }
             }
+            procesos.removeAll(readyQueue);
+
+            if (!readyQueue.isEmpty()) {
+                Process siguienteProceso = readyQueue.poll();
+                if (procesoActual == null || siguienteProceso.getCpuRemainingTime() < procesoActual.getCpuRemainingTime()) {
+                    if (procesoActual != null) {
+                        readyQueue.add(procesoActual);
+                    }
+                    procesoActual = siguienteProceso;
+                    procesoActual.setStartTime(tiempoActual);
+                } else {
+                    readyQueue.add(siguienteProceso);
+                }
+
+                procesoActual.setCpuRemainingTime(procesoActual.getCpuRemainingTime() - 1);
+
+                System.out.println("Tiempo " + tiempoActual + ": Ejecutando " + procesoActual.getName());
+
+                if (procesoActual.getCpuRemainingTime() == 0) {
+                    procesoActual.setEndTime(tiempoActual + 1); // Registra el tiempo de finalización
+                    procesoActual.setWaitTime((int) procesoActual.getStartTime().get(procesoActual.getStartTime().size() - 1) - procesoActual.getArrivalTime()); // Calcula el tiempo de espera
+                    procesoActual = null;
+                }
+            } else {
+                System.out.println("Tiempo " + tiempoActual + ": CPU en espera");
+            }
+
+            tiempoActual++;
             i++;
-        } while ( i < processes.size());
+        }
 
         System.out.println(processes + "\n" + "Average Wait Time: " + averageWaitTime());
     }
+
 
     private int lastIndex(ArrayList arr) {
         return (int) arr.get(arr.size() - 1);
@@ -73,13 +93,15 @@ public class SRTF implements Methods {
     private int remainingTime(Process process) {
         return process.getCpuTime() - actualTime;
     }
+
     public float averageWaitTime() {
         float averageTime = 0;
         for (Process process : processes) {
             averageTime += process.totalWaitTime();
         }
-        return  averageTime / processes.size();
+        return averageTime / processes.size();
     }
+
     @Override
     public void calculateStartTime(Processes processes) {
 
