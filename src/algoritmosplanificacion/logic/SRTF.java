@@ -16,6 +16,7 @@ public class SRTF implements Methods {
 
     public SRTF(ArrayList<Process> processes) {
         this.processes = processes;
+        this.actualProcess = processes.get(0);
     }
 
     @Override
@@ -25,55 +26,50 @@ public class SRTF implements Methods {
 
     @Override
     public void planificationMethod() {
-        PriorityQueue<Process> readyQueue = new PriorityQueue<>();
-        ArrayList<Process> procesos = new ArrayList<>(processes);
-        int tiempoActual = 0, i = 0;
-        Process procesoActual = null;
+        int currentTime = 0;
+        ArrayList<Process> completedProcesses = new ArrayList<>();
 
-        while (!readyQueue.isEmpty() || i < processes.size()) {
-            // Agrega procesos a la cola de listos si han llegado
-            for (Process proceso : procesos) {
-                if (proceso.getArrivalTime() <= tiempoActual) {
-                    readyQueue.add(proceso);
-                }
-            }
-            procesos.removeAll(readyQueue);
+        while (!processes.isEmpty()) {
 
-            if (!readyQueue.isEmpty()) {
-                Process siguienteProceso = readyQueue.poll();
-                if (procesoActual == null || siguienteProceso.getCpuRemainingTime() < procesoActual.getCpuRemainingTime()) {
-                    if (procesoActual != null) {
-                        readyQueue.add(procesoActual);
-                    }
-                    procesoActual = siguienteProceso;
-                    procesoActual.setStartTime(tiempoActual);
-                } else {
-                    readyQueue.add(siguienteProceso);
-                }
-
-                procesoActual.setCpuRemainingTime(procesoActual.getCpuRemainingTime() - 1);
-
-                System.out.println("Tiempo " + tiempoActual + ": Ejecutando " + procesoActual.getName());
-
-                if (procesoActual.getCpuRemainingTime() == 0) {
-                    procesoActual.setEndTime(tiempoActual + 1); // Registra el tiempo de finalización
-                    procesoActual.setWaitTime((int) procesoActual.getStartTime().get(procesoActual.getStartTime().size() - 1) - procesoActual.getArrivalTime()); // Calcula el tiempo de espera
-                    procesoActual = null;
-                }
-            } else {
-                System.out.println("Tiempo " + tiempoActual + ": CPU en espera");
+            Process shortestJob = processes.get(0);
+            if (shortestJob.getStartTime().isEmpty()) {
+                shortestJob.setStartTime(currentTime);
             }
 
-            tiempoActual++;
-            i++;
+            currentTime++;
+            shortestJob.setCpuRemainingTime(shortestJob.getCpuRemainingTime() - 1);
+
+            if (shortestJob.getCpuRemainingTime() == 0) {
+                shortestJob.setEndTime(currentTime);
+                processes.remove(0);
+                completedProcesses.add(shortestJob);
+            }
+            int waittime = 0;
+            for (Process p : processes) {
+                if (p != shortestJob && p.getArrivalTime() <= currentTime) {
+                    p.setWaitTime((int) p.getWaitTime().get(p.getWaitTime().size() - 1) + 1);
+                } else if (p != shortestJob) {
+                    p.setWaitTime(lastIndex(p.getWaitTime()));
+                }
+            }
         }
 
-        System.out.println(processes + "\n" + "Average Wait Time: " + averageWaitTime());
+        // Calcular tiempos de espera promedio
+        int totalWaitingTime = 0;
+        for (Process p : completedProcesses) {
+            int lastIndex = p.getWaitTime().size() - 1;
+            totalWaitingTime += lastIndex(p.getWaitTime());
+        }
+
+        double averageWaitingTime = (double) totalWaitingTime / completedProcesses.size();
+        System.out.println("Tiempos de espera promedio: " + averageWaitingTime +"\n" + completedProcesses);
     }
 
 
     private int lastIndex(ArrayList arr) {
-        return (int) arr.get(arr.size() - 1);
+        if (arr.size() > 0)
+            return (int) arr.get(arr.size() - 1);
+        return 0;
     }
 
     private int changeExProcess(ArrayList<Process> auxProcesses, Process newProcess, int i) {
