@@ -44,16 +44,11 @@ public class SRTF implements Methods {
                 processes.remove(0);
                 completedProcesses.add(shortestJob);
             }
-            int waittime = 0;
-            for (Process p : processes) {
-                if (p != shortestJob && p.getArrivalTime() <= currentTime) {
-                    p.setWaitTime((int) p.getWaitTime().get(p.getWaitTime().size() - 1) + 1);
-                } else if (p != shortestJob) {
-                    p.setWaitTime(lastIndex(p.getWaitTime()));
-                }
-            }
-        }
 
+        }
+        for (Process p : completedProcesses) {
+            p.setWaitTime(lastIndex(p.getStartTime()) - p.getArrivalTime());
+        }
         // Calcular tiempos de espera promedio
         int totalWaitingTime = 0;
         for (Process p : completedProcesses) {
@@ -62,7 +57,7 @@ public class SRTF implements Methods {
         }
 
         double averageWaitingTime = (double) totalWaitingTime / completedProcesses.size();
-        System.out.println("Tiempos de espera promedio: " + averageWaitingTime +"\n" + completedProcesses);
+        System.out.println("Tiempos de espera promedio: " + averageWaitingTime + "\n" + completedProcesses);
     }
 
 
