@@ -25,64 +25,61 @@ public class SRTF implements Methods {
 
     @Override
     public void planificationMethod() {
-        PriorityQueue<Process> readyQueue = new PriorityQueue<>();
-        int tiempoActual = 0;
-        int totalProcesos = processes.size();
-        int procesoActual = 0;
-        
-
-        while (procesoActual < totalProcesos || !readyQueue.isEmpty()) {
-            // Agregar procesos a la cola de listos si han llegado.
-            while (procesoActual < totalProcesos && processes.get(procesoActual).getArrivalTime() <= tiempoActual) {
-                readyQueue.add(processes.get(procesoActual));
-                procesoActual++;
+        PriorityQueue<Process> priorityQueue = new PriorityQueue<>();
+        Process newProcess;
+        int i = 0;
+        do {
+            newProcess = processes.get(i);
+            if (newProcess.getArrivalTime() == 0) {
+                newProcess.setStartTime(actualTime);
+                actualProcess = newProcess;
             }
+            if (processes.get(i).getArrivalTime() <= actualTime) {
 
-            if (!readyQueue.isEmpty()) {
-                Process executionProcess = readyQueue.poll();
-                if (executionProcess.getStartTime().isEmpty()) {
-                    executionProcess.setStartTime(tiempoActual); // Añadir el tiempo de inicio
-                }
-                //looooooooop
-                System.out.println("Tiempo " + tiempoActual + ": Ejecutando " + executionProcess.getName());
+                if (newProcess.getCpuRemainingTime() < actualProcess.getCpuRemainingTime()) {
+                    actualProcess.setEndTime(actualTime);
 
-                executionProcess.setCpuRemainingTime(executionProcess.getCpuRemainingTime() - 1);
-
-                if (executionProcess.getCpuRemainingTime() == 0) {
-                    executionProcess.setEndTime(tiempoActual + 1); // Añadir el tiempo de finalización
-                    int ultimoInicio = (int) executionProcess.getStartTime().get(executionProcess.getStartTime().size() - 1);
-                    executionProcess.setWaitTime(ultimoInicio - executionProcess.getArrivalTime()); // Calcular el tiempo de espera
+                    actualProcess.setWaitTime(lastIndex(actualProcess.getStartTime()) - actualProcess.getArrivalTime());
+                    actualProcess = newProcess;
+                    newProcess.setStartTime(actualTime);
                 } else {
-                    readyQueue.add(executionProcess);
+                    priorityQueue.add(newProcess);
                 }
-            } else {
-                System.out.println("Tiempo " + tiempoActual + ": CPU en espera");
             }
+            i++;
+        } while ( i < processes.size());
 
-            tiempoActual++;
-        }
-        System.out.println(processes);
+        System.out.println(processes + "\n" + "Average Wait Time: " + averageWaitTime());
+    }
+
+    private int lastIndex(ArrayList arr) {
+        return (int) arr.get(arr.size() - 1);
     }
 
     private int changeExProcess(ArrayList<Process> auxProcesses, Process newProcess, int i) {
-        actualProcess.setStartTime(actualTime);
-        actualProcess.setEndTime(actualTime);
-        int lastindex = actualProcess.getStartTime().size() - 1;
-        actualProcess.setWaitTime((int) actualProcess.getStartTime().get(lastindex) - actualProcess.getArrivalTime());
-        actualTime += actualProcess.getCpuTime() - remainingTime(actualProcess);
-        actualProcess.setCpuTime(remainingTime(actualProcess));
-        if (remainingTime(actualProcess) <= 0) {
-            auxProcesses.remove(actualProcess);
-            i = 0;
+        newProcess = auxProcesses.get(i);
+        if (newProcess.getArrivalTime() <= actualTime) {
+            newProcess.setStartTime(actualTime);
+            calculateEndTime(newProcess);
+            calculateWaitTime(newProcess);
+            processes.set(processes.indexOf(newProcess), newProcess);
+            auxProcesses.remove(i);
+            i = -1;
         }
-        actualProcess = newProcess;
         return i;
     }
+
 
     private int remainingTime(Process process) {
         return process.getCpuTime() - actualTime;
     }
-
+    public float averageWaitTime() {
+        float averageTime = 0;
+        for (Process process : processes) {
+            averageTime += process.totalWaitTime();
+        }
+        return  averageTime / processes.size();
+    }
     @Override
     public void calculateStartTime(Processes processes) {
 

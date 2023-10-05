@@ -30,6 +30,8 @@ public class Processes {
 
     }
 
+
+
     public void printProcesses() {
         method.planificationMethod();
     }
@@ -48,7 +50,7 @@ public class Processes {
 
     @Override
     public String toString() {
-        return "\nProcesses{" + "\n " + processes + '}';
+        return "\nProcesses{" + "\n " + processes +  '}';
     }
 
 }

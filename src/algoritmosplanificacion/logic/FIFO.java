@@ -36,31 +36,30 @@ public class FIFO implements Methods {
                 i = -1;
             }
         }
-        average = average();
-        System.out.println(processes + "\n" + average);
+
+        System.out.println(processes + "\n" + "Average Wait Time: " + averageWaitTime());
     }
 
     @Override
     public void calculateStartTime(Processes processes) {
     }
 
-
+    public float averageWaitTime() {
+        float averageTime = 0;
+        for (Process process : processes) {
+            averageTime += process.totalWaitTime();
+        }
+        return  averageTime / processes.size();
+    }
     @Override
     public void calculateEndTime(Process process) {
-        process.setEndTime(Integer.parseInt((String) process.getStartTime().get(0)) + process.getCpuTime());
+        process.setEndTime((int)process.getStartTime().get(0) + process.getCpuTime());
     }
 
-    public int average() {
-        int espera = 0;
-        for (int i = 0; !processes.isEmpty(); i++) {
-            processes.get(i).totalWaitTime();
-        }
-        return espera;
 
-    }
 
     @Override
     public void calculateWaitTime(Process process) {
-        process.setWaitTime(Integer.parseInt((String) process.getStartTime().get(0)) - process.getArrivalTime());
+        process.setWaitTime((int ) process.getStartTime().get(0) - process.getArrivalTime());
     }
 }

@@ -38,9 +38,15 @@ public class SJF implements Methods {
             }
         }
 
-        System.out.println(processes);
-    }
 
+        System.out.println(processes + "\n" + "Average Wait Time: " + averageWaitTime());    }
+    public float averageWaitTime() {
+        float averageTime = 0;
+        for (Process process : processes) {
+            averageTime += process.totalWaitTime();
+        }
+        return  averageTime / processes.size();
+    }
     @Override
     public void calculateStartTime(Processes processes) {
 
@@ -48,11 +54,11 @@ public class SJF implements Methods {
 
     @Override
     public void calculateEndTime(Process process) {
-        process.setEndTime(Integer.parseInt((String) process.getStartTime().get(0)) + process.getCpuTime());
+        process.setEndTime((int) process.getStartTime().get(0) + process.getCpuTime());
     }
 
     @Override
     public void calculateWaitTime(Process process) {
-        process.setWaitTime(Integer.parseInt((String) process.getStartTime().get(0)) - process.getArrivalTime());
+        process.setWaitTime((int)process.getStartTime().get(0) - process.getArrivalTime());
     }
 }

@@ -15,7 +15,7 @@ public class Process implements Comparable<Process> {
     private int priority;
     final private int arrivalTime;
     private int cpuTime;
-    private  int cpuRemainingTime;
+    private int cpuRemainingTime;
     private ArrayList<Integer> startTime;
     private ArrayList<Integer> endTime;
     private ArrayList<Integer> waitTime;
@@ -51,11 +51,10 @@ public class Process implements Comparable<Process> {
 
     public int totalWaitTime() {
         int averageTime = 0;
-        for (int espera : waitTime
-        ) {
+        for (int espera : waitTime) {
             averageTime += espera;
         }
-        return averageTime / waitTime.size();
+        return averageTime ;
     }
 
     public String getName() {
