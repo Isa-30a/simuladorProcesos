@@ -26,40 +26,51 @@ public class SRTF implements Methods {
 
     @Override
     public void planificationMethod() {
-        int currentTime = 0;
-        ArrayList<Process> completedProcesses = new ArrayList<>();
 
-        while (!processes.isEmpty()) {
-
-            Process shortestJob = processes.get(0);
-            if (shortestJob.getStartTime().isEmpty()) {
-                shortestJob.setStartTime(currentTime);
+        ArrayList<Process> auxProcesses = new ArrayList<>(processes);
+        Process newProcess = auxProcesses.get(0);
+        while (actualTime != totalExecutionTime() && !auxProcesses.isEmpty()) {
+            if (newProcess.getArrivalTime() == 0) {
+                actualProcess = newProcess;
+                actualProcess.setStartTime(actualTime);
+                actualProcess.setWaitTime(lastIndex(actualProcess.getStartTime()) - actualProcess.getArrivalTime());
+            } else if (newProcess.getArrivalTime() < actualTime) {
+                if (isRemainingLess(newProcess)) {
+                    switchProcess(newProcess);
+                }
+                actualTime++;
+                if (actualProcess!=null)
+                    if(actualProcess.getCpuRemainingTime()-1 >0){
+                        actualProcess.setCpuRemainingTime(actualProcess.getCpuRemainingTime()-1);}
+                    else {
+                        actualProcess.setCpuRemainingTime(0);
+                        processes.set(processes.indexOf(actualProcess), actualProcess);
+                        auxProcesses.remove(actualProcess);
+                    }
             }
-
-            currentTime++;
-            shortestJob.setCpuRemainingTime(shortestJob.getCpuRemainingTime() - 1);
-
-            if (shortestJob.getCpuRemainingTime() == 0) {
-                shortestJob.setEndTime(currentTime);
-                processes.remove(0);
-                completedProcesses.add(shortestJob);
-            }
-
-        }
-        for (Process p : completedProcesses) {
-            p.setWaitTime(lastIndex(p.getStartTime()) - p.getArrivalTime());
-        }
-        // Calcular tiempos de espera promedio
-        int totalWaitingTime = 0;
-        for (Process p : completedProcesses) {
-            int lastIndex = p.getWaitTime().size() - 1;
-            totalWaitingTime += lastIndex(p.getWaitTime());
         }
 
-        double averageWaitingTime = (double) totalWaitingTime / completedProcesses.size();
-        System.out.println("Tiempos de espera promedio: " + averageWaitingTime + "\n" + completedProcesses);
+        System.out.println("Tiempos de espera promedio: " + averageWaitTime() + "\n" + processes);
     }
 
+    private void switchProcess(Process newProcess) {
+        actualProcess.setEndTime(actualTime);
+        actualProcess.setWaitTime(lastIndex(actualProcess.getStartTime()) - actualProcess.getArrivalTime());
+        actualProcess = newProcess;
+        actualProcess.setStartTime(actualTime);
+        actualProcess.setWaitTime(lastIndex(actualProcess.getStartTime()) - actualProcess.getArrivalTime());
+    }
+    private boolean isRemainingLess(Process newProcess) {
+        return remainingTime(newProcess) < remainingTime(actualProcess);
+    }
+
+    private int totalExecutionTime() {
+        int total = 0;
+        for (Process process : processes) {
+            total += process.getCpuTime();
+        }
+        return total;
+    }
 
     private int lastIndex(ArrayList arr) {
         if (arr.size() > 0)
