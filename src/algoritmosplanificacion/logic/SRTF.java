@@ -23,15 +23,19 @@ public class SRTF implements Methods {
     @Override
     public void planificationMethod() {
         ArrayList<Process> auxProcesses = new ArrayList<>(processes);
-
+        Process lastProcess = null;
         while (!auxProcesses.isEmpty()) {
+
             addArrivedProcess(processes);
             if(arrivedProcess.isEmpty()){
                 actualTime++;
                 continue;
             }
             actualProcess = lessRemainingTime(arrivedProcess);
-
+            if( lastProcess!= null && lastProcess!=actualProcess && lastProcess.getCpuRemainingTime()>0 ){
+                lastProcess.setStartTime(actualTime);
+                lastProcess.setWaitTime(lastIndex(lastProcess.getStartTime()) - lastProcess.getArrivalTime());
+            }
             actualProcess.setCpuRemainingTime(actualProcess.getCpuRemainingTime() - 1);
 
             if(actualProcess.getCpuRemainingTime() == 0){
@@ -42,7 +46,7 @@ public class SRTF implements Methods {
                 actualProcess = null;
             }
             actualTime++;
-
+            lastProcess=actualProcess;
         }
         System.out.println(processes + "\n" + "Tiempos de espera promedio: " + averageWaitTime());
     }
