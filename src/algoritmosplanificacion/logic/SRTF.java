@@ -7,6 +7,7 @@ import algoritmosplanificacion.Processes;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class SRTF implements Methods {
     private ArrayList<Process> processes;
@@ -26,42 +27,60 @@ public class SRTF implements Methods {
 
     @Override
     public void planificationMethod() {
-
+        Queue<Process> waitingProcess = new PriorityQueue<>();
         ArrayList<Process> auxProcesses = new ArrayList<>(processes);
-        Process newProcess = auxProcesses.get(0);
-        while (actualTime != totalExecutionTime() && !auxProcesses.isEmpty()) {
-            if (newProcess.getArrivalTime() == 0) {
-                actualProcess = newProcess;
-                actualProcess.setStartTime(actualTime);
-                actualProcess.setWaitTime(lastIndex(actualProcess.getStartTime()) - actualProcess.getArrivalTime());
-            } else if (newProcess.getArrivalTime() < actualTime) {
+        int pos = 0;
+        Process newProcess;
+
+        while (!auxProcesses.isEmpty()) {
+            newProcess = auxProcesses.get(pos);
+            if (newProcess.getArrivalTime() <= actualTime) {
+                waitingProcess.add(newProcess);
+                auxProcesses.remove(pos);
+                pos = 0;
+            } else {
+                pos++;
+            }
+            if (waitingProcess.peek() != null) {
                 if (isRemainingLess(newProcess)) {
                     switchProcess(newProcess);
-                }
-                actualTime++;
-                if (actualProcess!=null)
-                    if(actualProcess.getCpuRemainingTime()-1 >0){
-                        actualProcess.setCpuRemainingTime(actualProcess.getCpuRemainingTime()-1);}
-                    else {
-                        actualProcess.setCpuRemainingTime(0);
-                        processes.set(processes.indexOf(actualProcess), actualProcess);
-                        auxProcesses.remove(actualProcess);
+                } else {
+                    if (waitingProcess.peek() == (newProcess)) {
+                        switchProcess(newProcess);
                     }
+                }
+            }
+            actualTime++;
+            if (actualProcess != null) {
+                if (actualProcess.getCpuRemainingTime() - 1 > 0) {
+                    actualProcess.setCpuRemainingTime(actualProcess.getCpuRemainingTime() - 1);
+                } else {
+                    actualProcess.setCpuRemainingTime(0);
+                    actualProcess.setEndTime(actualTime);
+                    processes.set(processes.indexOf(actualProcess), actualProcess);
+                    auxProcesses.remove(actualProcess);
+                    actualProcess = null;
+                }
             }
         }
-
-        System.out.println("Tiempos de espera promedio: " + averageWaitTime() + "\n" + processes);
+        System.out.println(processes + "\n" + "Tiempos de espera promedio: " + averageWaitTime());
     }
 
     private void switchProcess(Process newProcess) {
-        actualProcess.setEndTime(actualTime);
-        actualProcess.setWaitTime(lastIndex(actualProcess.getStartTime()) - actualProcess.getArrivalTime());
+        if (actualProcess != null) {
+            actualProcess.setEndTime(actualTime);
+
+        }
         actualProcess = newProcess;
         actualProcess.setStartTime(actualTime);
         actualProcess.setWaitTime(lastIndex(actualProcess.getStartTime()) - actualProcess.getArrivalTime());
     }
+
     private boolean isRemainingLess(Process newProcess) {
-        return remainingTime(newProcess) < remainingTime(actualProcess);
+        if (actualProcess != null) {
+            return remainingTime(newProcess) < remainingTime(actualProcess);
+        }
+        return true;
     }
 
     private int totalExecutionTime() {

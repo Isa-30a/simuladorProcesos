@@ -129,7 +129,10 @@ public class Process implements Comparable<Process> {
 
     @Override
     public int compareTo(Process otro) {
-        return Integer.compare(this.cpuRemainingTime, otro.cpuRemainingTime);
-
+        int pancho = Integer.compare(this.cpuRemainingTime, otro.cpuRemainingTime);
+        if (pancho == 0) {
+            return Integer.compare(this.arrivalTime, otro.arrivalTime);
+        }
+        return pancho;
     }
 }
