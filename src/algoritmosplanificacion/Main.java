@@ -33,14 +33,14 @@ public class Main {
         } while (choice > 5 || choice < 0);
 
         ArrayList<Process> array = new ArrayList<>();
-        array.add(new Process("a", 0, 5));
+        array.add(new Process("a", 0, 3));
+        array.add(new Process("b", 1, 1));
+        array.add(new Process("c", 3, 2));
+        array.add(new Process("d", 4, 3));
+        /*array.add(new Process("a", 0, 5));
         array.add(new Process("b", 3, 3));
         array.add(new Process("c", 4, 4));
-        array.add(new Process("d", 5, 2));
-        /*this.processesSFJ.add(new Process("a", 0, 5));
-        this.processesSFJ.add(new Process("b", 3, 3));
-        this.processesSFJ.add(new Process("c", 4, 4));
-        this.processesSFJ.add(new Process("d", 5, 2));*/
+        array.add(new Process("d", 5, 2));*/
 
         Processes context = new Processes(choice, array);
         context.printProcesses();

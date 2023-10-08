@@ -5,12 +5,13 @@ import algoritmosplanificacion.Process;
 import algoritmosplanificacion.Processes;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Queue;
 
 public class SRTF implements Methods {
     private ArrayList<Process> processes;
     private int actualTime = 0;
-    private Queue<Process> arrivedProcess;
+    private Queue<Process> arrivedProcess = new LinkedList<>();
 
     private Process actualProcess;
 
@@ -22,14 +23,24 @@ public class SRTF implements Methods {
     @Override
     public void planificationMethod() {
         ArrayList<Process> auxProcesses = new ArrayList<>(processes);
-        Process newProcess;
 
         while (!auxProcesses.isEmpty()) {
-            addArrivedProcess(auxProcesses);
-            newProcess = lessRemainingTime(arrivedProcess);
-            switchProcess(newProcess);
+            addArrivedProcess(processes);
+            if(arrivedProcess.isEmpty()){
+                actualTime++;
+                continue;
+            }
+            actualProcess = lessRemainingTime(arrivedProcess);
 
             actualProcess.setCpuRemainingTime(actualProcess.getCpuRemainingTime() - 1);
+
+            if(actualProcess.getCpuRemainingTime() == 0){
+                actualProcess.setEndTime(actualTime+1);
+                processes.set(processes.indexOf(actualProcess), actualProcess);
+                auxProcesses.remove(actualProcess);
+                arrivedProcess.remove(actualProcess);
+                actualProcess = null;
+            }
             actualTime++;
 
         }
@@ -51,17 +62,13 @@ public class SRTF implements Methods {
                 lessRemainingTime = process;
             }
         }
+        if(lessRemainingTime.getCpuRemainingTime() == lessRemainingTime.getCpuTime()){
+            lessRemainingTime.setStartTime(actualTime);
+            lessRemainingTime.setWaitTime(lastIndex(lessRemainingTime.getStartTime()) - lessRemainingTime.getArrivalTime());
+        }
         return lessRemainingTime;
     }
 
-    private void switchProcess(Process newProcess) {
-        if (actualProcess != null) {
-            actualProcess.setEndTime(actualTime);
-        }
-        actualProcess = newProcess;
-        actualProcess.setStartTime(actualTime);
-        actualProcess.setWaitTime(lastIndex(actualProcess.getStartTime()) - actualProcess.getArrivalTime());
-    }
 
 
     private int lastIndex(ArrayList arr) {
