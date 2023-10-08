@@ -37,8 +37,9 @@ public class Main {
         array.add(new Process("a", 0, 4,3));
         array.add(new Process("b", 2,3,2));
         array.add(new Process("c", 3, 1,3));
-        array.add(new Process("d", 5, 3,1));/*
-        array.add(new Process("a", 0, 3,2));
+        array.add(new Process("d", 5, 3,1));
+
+        /*array.add(new Process("a", 0, 3,2));
         array.add(new Process("b", 1, 1,1));
         array.add(new Process("c", 3, 2,3));
         array.add(new Process("d", 4, 3,4));*/
