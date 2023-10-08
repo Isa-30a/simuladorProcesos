@@ -24,7 +24,7 @@ public class Processes {
             case 1 -> method = new FIFO(processes);
             case 2 -> method = new SJF(processes);
             case 3 -> method = new SRTF(processes);
-            case 4 -> method = new PriorityExp();
+            case 4 -> method = new PriorityExp(processes);
         }
         this.processes = processes;
 

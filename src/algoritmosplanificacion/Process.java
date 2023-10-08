@@ -42,7 +42,7 @@ public class Process implements Comparable<Process> {
 
     }
 
-    public Process(String name, int priority, int arrivalTime, int cpuTime) {
+    public Process(String name,  int arrivalTime, int cpuTime,int priority) {
         this.name = name;
         this.priority = priority;
         this.arrivalTime = arrivalTime;
@@ -124,7 +124,15 @@ public class Process implements Comparable<Process> {
 
     @Override
     public String toString() {
-        return "Process{" + "nombre=" + name + ", tiempoLlegada=" + arrivalTime + ", tiempoCpu=" + cpuTime + ", tiempoComienzo=" + startTime + ", tiempoFin=" + endTime + ", tiempoEspera=" + waitTime + "}\n";
+        return "Process{" +
+                "name='" + name + '\'' +
+                ", priority=" + priority +
+                ", arrivalTime=" + arrivalTime +
+                ", cpuTime=" + cpuTime +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", waitTime=" + waitTime +
+                '}'+ '\n';
     }
 
     @Override

@@ -81,10 +81,6 @@ public class SRTF implements Methods {
         return 0;
     }
 
-    private int remainingTime(Process process) {
-        return process.getCpuTime() - actualTime;
-    }
-
     public float averageWaitTime() {
         float averageTime = 0;
         for (Process process : processes) {
