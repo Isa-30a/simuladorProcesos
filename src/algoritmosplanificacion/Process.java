@@ -5,8 +5,6 @@
 package algoritmosplanificacion;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 
 /**
  * @author Isa
@@ -94,8 +92,12 @@ public class Process implements Comparable<Process> {
         return startTime;
     }
 
-    public void setStartTime(int startTime) {
+    public void addStartTime(int startTime) {
         this.startTime.add(startTime);
+    }
+
+    public void setStartTime(ArrayList<Integer> startTime) {
+        this.startTime = startTime;
     }
 
     public ArrayList getEndTime() {
@@ -131,7 +133,7 @@ public class Process implements Comparable<Process> {
                 ", cpuTime=" + cpuTime +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
-                ", waitTime=" + waitTime +
+                ", waitTime=" + waitTime.get(waitTime.size()-1) +
                 '}'+ '\n';
     }
 

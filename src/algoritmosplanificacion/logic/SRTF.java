@@ -25,54 +25,65 @@ public class SRTF implements Methods {
         ArrayList<Process> auxProcesses = new ArrayList<>(processes);
         Process lastProcess = null;
         while (!auxProcesses.isEmpty()) {
-
             addArrivedProcess(processes);
-            if(arrivedProcess.isEmpty()){
+            if (arrivedProcess.isEmpty()) {
                 actualTime++;
                 continue;
             }
             actualProcess = lessRemainingTime(arrivedProcess);
-            if( lastProcess!= null && lastProcess!=actualProcess && lastProcess.getCpuRemainingTime()>0 ){
-                lastProcess.setStartTime(actualTime);
-                lastProcess.setWaitTime(lastIndex(lastProcess.getStartTime()) - lastProcess.getArrivalTime());
+            for (Process p : arrivedProcess) {
+                if (p != actualProcess) {
+                    if (p.getWaitTime().isEmpty()) {
+                        p.setWaitTime(1);
+                    } else {
+                        p.setWaitTime((int) p.getWaitTime().get(p.getWaitTime().size() - 1) + 1);
+                    }
+                }
+            }
+
+            if (lastProcess != null && lastProcess != actualProcess) {
+                if (lastProcess.getCpuRemainingTime() > 0) {
+                    lastProcess.setEndTime(actualTime);
+                }
+                actualProcess.addStartTime(actualTime);
             }
             actualProcess.setCpuRemainingTime(actualProcess.getCpuRemainingTime() - 1);
 
-            if(actualProcess.getCpuRemainingTime() == 0){
-                actualProcess.setEndTime(actualTime+1);
+            if (actualProcess.getCpuRemainingTime() == 0) {
+                actualProcess.setEndTime(actualTime + 1);
+                actualProcess.setStartTime(distinct(actualProcess.getStartTime()));
                 processes.set(processes.indexOf(actualProcess), actualProcess);
                 auxProcesses.remove(actualProcess);
                 arrivedProcess.remove(actualProcess);
-                actualProcess = null;
             }
             actualTime++;
-            lastProcess=actualProcess;
+            lastProcess = actualProcess;
         }
         System.out.println(processes + "\n" + "Tiempos de espera promedio: " + averageWaitTime());
     }
 
     private void addArrivedProcess(ArrayList<Process> auxProcesses) {
-        for(Process p : auxProcesses){
-            if(p.getArrivalTime() == actualTime){
+        for (Process p : auxProcesses) {
+            if (p.getArrivalTime() == actualTime && p.getCpuRemainingTime() > 0) {
                 arrivedProcess.add(p);
             }
         }
     }
 
     private Process lessRemainingTime(Queue<Process> auxProcesses) {
-        Process lessRemainingTime = auxProcesses.peek();
-        for (Process process : auxProcesses) {
-            if (process.getCpuRemainingTime() < lessRemainingTime.getCpuRemainingTime()) {
-                lessRemainingTime = process;
+        Process lessRemainingTime = auxProcesses.stream().min((p1, p2) -> {
+            int compare = Integer.compare(p1.getCpuRemainingTime(), p2.getCpuRemainingTime());
+            if (compare == 0) {
+                return Integer.compare(p1.getArrivalTime(), p2.getArrivalTime());
             }
-        }
-        if(lessRemainingTime.getCpuRemainingTime() == lessRemainingTime.getCpuTime()){
-            lessRemainingTime.setStartTime(actualTime);
+            return compare;
+        }).get();
+        if (lessRemainingTime.getCpuRemainingTime() == lessRemainingTime.getCpuTime()) {
+            lessRemainingTime.addStartTime(actualTime);
             lessRemainingTime.setWaitTime(lastIndex(lessRemainingTime.getStartTime()) - lessRemainingTime.getArrivalTime());
         }
         return lessRemainingTime;
     }
-
 
 
     private int lastIndex(ArrayList arr) {
@@ -104,4 +115,13 @@ public class SRTF implements Methods {
 
     }
 
+    private ArrayList<Integer> distinct(ArrayList<Integer> list) {
+        ArrayList<Integer> distinctList = new ArrayList<>();
+        for (Integer integer : list) {
+            if (!distinctList.contains(integer)) {
+                distinctList.add(integer);
+            }
+        }
+        return distinctList;
+    }
 }

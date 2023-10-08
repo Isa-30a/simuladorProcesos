@@ -24,7 +24,7 @@ public class SJF implements Methods {
         for (int i = 0; !auxProcesses.isEmpty(); i++) {
             newProcess = auxProcesses.get(i);
             if (newProcess.getArrivalTime() <= actualTime) {
-                newProcess.setStartTime(actualTime);
+                newProcess.addStartTime(actualTime);
                 actualTime += newProcess.getCpuTime();
                 calculateEndTime(newProcess);
                 calculateWaitTime(newProcess);
