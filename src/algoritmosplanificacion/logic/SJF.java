@@ -15,10 +15,6 @@ public class SJF implements Methods {
         this.processes = processes;
     }
 
-    @Override
-    public void addProcess(Process process) {
-
-    }
 
     @Override
     public void planificationMethod() {

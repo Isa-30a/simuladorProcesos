@@ -7,10 +7,6 @@ import algoritmosplanificacion.Processes;
 
 public class PriorityExp implements Methods {
 
-    @Override
-    public void addProcess(Process process) {
-
-    }
 
     @Override
     public void planificationMethod() {
