@@ -131,7 +131,7 @@ public class Process implements Comparable<Process> {
                 ", cpuTime=" + cpuTime +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
-                ", waitTime=" + waitTime +
+                ", waitTime=" + waitTime.get(waitTime.size() - 1) +
                 '}'+ '\n';
     }
 

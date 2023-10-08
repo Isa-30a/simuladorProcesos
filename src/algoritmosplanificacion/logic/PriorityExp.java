@@ -28,11 +28,14 @@ public class PriorityExp implements Methods {
             if (arrivedProcess.isEmpty()) {
                 actualTime++;
                 continue;
-            }
+            }//TODO: make a solution
             actualProcess = lessPriority(arrivedProcess);
             if (lastProcess != null && lastProcess != actualProcess && lastProcess.getCpuRemainingTime() > 0) {
-                lastProcess.setStartTime(actualTime);
-                lastProcess.setWaitTime(lastIndex(lastProcess.getStartTime()) - lastProcess.getArrivalTime());
+
+
+                lastProcess.setEndTime(actualTime);
+                lastProcess.setStartTime(lastIndex(lastProcess.getEndTime(),-1)-lastIndex(lastProcess.getEndTime(),-2));
+                lastProcess.setWaitTime(lastIndex(lastProcess.getStartTime(),-1) - lastProcess.getArrivalTime());
             }
             actualProcess.setCpuRemainingTime(actualProcess.getCpuRemainingTime() - 1);
 
@@ -58,23 +61,24 @@ public class PriorityExp implements Methods {
     }
 
     private Process lessPriority(Queue<Process> auxProcesses) {
-        Process lessRemainingTime = auxProcesses.peek();
+        Process lessPriority = auxProcesses.peek();
         for (Process process : auxProcesses) {
-            if (process.getPriority() < lessRemainingTime.getPriority()) {
-                lessRemainingTime = process;
+            if (process.getPriority() < lessPriority.getPriority()) {
+                lessPriority = process;
             }
         }
-        if (lessRemainingTime.getCpuRemainingTime() == lessRemainingTime.getCpuTime()) {
-            lessRemainingTime.setStartTime(actualTime);
-            lessRemainingTime.setWaitTime(lastIndex(lessRemainingTime.getStartTime()) - lessRemainingTime.getArrivalTime());
+        if (lessPriority != null && lessPriority.getCpuRemainingTime() == lessPriority.getCpuTime()) {
+            lessPriority.setStartTime(actualTime);
+            lessPriority.setWaitTime(lastIndex(lessPriority.getStartTime(), -1) - lessPriority.getArrivalTime());
         }
-        return lessRemainingTime;
+        return lessPriority;
     }
 
 
-    private int lastIndex(ArrayList arr) {
-        if (arr.size() > 0)
-            return (int) arr.get(arr.size() - 1);
+    private int lastIndex(ArrayList arr, int index) {
+        if (arr.size() > 0 && index < arr.size()-1)
+            return (int) arr.get(arr.size() - index);
+
         return 0;
     }
 

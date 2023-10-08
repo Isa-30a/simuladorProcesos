@@ -6,6 +6,7 @@ import algoritmosplanificacion.Processes;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.Queue;
 
 public class SRTF implements Methods {
@@ -27,52 +28,54 @@ public class SRTF implements Methods {
         while (!auxProcesses.isEmpty()) {
 
             addArrivedProcess(processes);
-            if(arrivedProcess.isEmpty()){
+            if (arrivedProcess.isEmpty()) {
                 actualTime++;
                 continue;
             }
             actualProcess = lessRemainingTime(arrivedProcess);
-            if( lastProcess!= null && lastProcess!=actualProcess && lastProcess.getCpuRemainingTime()>0 ){
-                lastProcess.setStartTime(actualTime);
-                lastProcess.setWaitTime(lastIndex(lastProcess.getStartTime()) - lastProcess.getArrivalTime());
+            arrivedProcess.stream().filter(p -> p != actualProcess).forEach(p -> p.setWaitTime(p.getWaitTime().isEmpty() ? 1 : (int) p.getWaitTime().get(p.getWaitTime().size() - 1) + 1));
+            if (lastProcess != null && lastProcess != actualProcess && lastProcess.getCpuRemainingTime() > 0) {
+                actualProcess.setStartTime(actualTime);
+                lastProcess.setEndTime(actualTime);
             }
             actualProcess.setCpuRemainingTime(actualProcess.getCpuRemainingTime() - 1);
 
-            if(actualProcess.getCpuRemainingTime() == 0){
-                actualProcess.setEndTime(actualTime+1);
+            if (actualProcess.getCpuRemainingTime() == 0) {
+                actualProcess.setEndTime(actualTime + 1);
                 processes.set(processes.indexOf(actualProcess), actualProcess);
                 auxProcesses.remove(actualProcess);
                 arrivedProcess.remove(actualProcess);
-                actualProcess = null;
             }
             actualTime++;
-            lastProcess=actualProcess;
+            lastProcess = actualProcess;
         }
         System.out.println(processes + "\n" + "Tiempos de espera promedio: " + averageWaitTime());
     }
 
     private void addArrivedProcess(ArrayList<Process> auxProcesses) {
-        for(Process p : auxProcesses){
-            if(p.getArrivalTime() == actualTime){
+        for (Process p : auxProcesses) {
+            if (p.getArrivalTime() == actualTime) {
                 arrivedProcess.add(p);
             }
         }
     }
 
     private Process lessRemainingTime(Queue<Process> auxProcesses) {
-        Process lessRemainingTime = auxProcesses.peek();
-        for (Process process : auxProcesses) {
-            if (process.getCpuRemainingTime() < lessRemainingTime.getCpuRemainingTime()) {
-                lessRemainingTime = process;
+        Process lessRemainingTime = auxProcesses.stream().min((p1, p2) -> {
+            int compare = Integer.compare(p1.getCpuRemainingTime(), p2.getCpuRemainingTime());
+
+            if (compare == 0) {
+                return Integer.compare(p1.getArrivalTime(), p2.getArrivalTime());
             }
-        }
-        if(lessRemainingTime.getCpuRemainingTime() == lessRemainingTime.getCpuTime()){
+
+            return compare;
+        }).get();
+        if (lessRemainingTime.getCpuRemainingTime() == lessRemainingTime.getCpuTime()) {
             lessRemainingTime.setStartTime(actualTime);
             lessRemainingTime.setWaitTime(lastIndex(lessRemainingTime.getStartTime()) - lessRemainingTime.getArrivalTime());
         }
         return lessRemainingTime;
     }
-
 
 
     private int lastIndex(ArrayList arr) {
